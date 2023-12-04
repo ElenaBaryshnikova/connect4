@@ -8,22 +8,23 @@ from settings import Settings
 class Connect4:
     def __init__(self):
         self.board: list = [
-            ['*' for i in range(Settings.COL_COUNT)] for j in range(Settings.ROW_COUNT)
+            ['*' for _ in range(Settings.COL_COUNT)] for _ in range(Settings.ROW_COUNT)
         ]
         self.player: str = Settings.PLAYER1_POINT
 
     def print_board(self) -> None:
         print('\n'.join(' '.join(map(str, sl)) for sl in self.board))
 
-    @staticmethod
-    def is_column_correct(column_number: int) -> bool:
+    def is_column_correct(self, column_number: int) -> bool:
         if column_number > Settings.COL_COUNT:
-            print('Column number should be less when Settings.COL_COUNT')
+            print(f'Column number should be less when {Settings.COL_COUNT}')
             return False
         elif column_number <= 0:
             print('Column number should be positive')
             return False
-        # todo column is full
+        elif self.board[0][column_number-1] != '*':
+            print('Column is full, choose another')
+            return False
         return True
 
     def select_column(self) -> int:
@@ -33,7 +34,7 @@ class Connect4:
                 column_number = int(
                     input(f'Player {self.player} choose column number '),
                 )
-                valid = Connect4.is_column_correct(column_number)
+                valid = self.is_column_correct(column_number)
             except:
                 print('Value is not a number')
         return int(column_number)
@@ -110,4 +111,5 @@ if __name__ == '__main__':
         connect4.drop(chosen_column)
         connect4.print_board()
         connect4.change_player()
-    print(f'Congratulations player {connect4.find_winner()}, you win')
+    player_winner = Settings.PLAYER2_POINT if connect4.player == Settings.PLAYER1_POINT else Settings.PLAYER1_POINT
+    print(f'Congratulations player {player_winner}, you win')
